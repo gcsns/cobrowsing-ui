@@ -1,0 +1,155 @@
+<!-- before login -->
+<form nz-form [formGroup]="loginForm" (ngSubmit)="submitLoginForm()" *ngIf="showLoginForm">
+  <nz-form-item>
+    <nz-form-label [nzSpan]="5" nzRequired nzFor="username">Username</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzErrorTip="Username is required!">
+      <input nz-input formControlName="username" id="username" />
+    </nz-form-control>
+  </nz-form-item>
+
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="5" nzFor="role" nzRequired>Role</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzErrorTip="Please select your role!">
+      <nz-select id="role" name="role" formControlName="role" nzPlaceHolder="Select your role">
+        <nz-option nzValue="agent" nzLabel="Agent"></nz-option>
+        <nz-option nzValue="customer" nzLabel="Customer"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSpan]="5" nzRequired nzFor="note">Enter otp</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzErrorTip="Please input otp!">
+      <input id="otp" type="password" name="role" nz-input formControlName="otp" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control [nzSpan]="12" [nzOffset]="5">
+      <button nz-button nzType="primary">Submit</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+
+<!-- after login -->
+
+<form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()" *ngIf="!showLoginForm">
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="accountNumber">Account Number</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="This field is required!">
+      <input nz-input formControlName="accountNumber" id="accountNumber" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="firstName">First Name</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="First name is required!">
+      <input nz-input formControlName="firstName" id="firstName" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="middleName">Middle Name</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24">
+      <input nz-input formControlName="middleName" id="middleName" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="lastName">Last Name</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Last Name is required!">
+      <input nz-input formControlName="lastName" id="lastName" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="email">E-mail</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid E-mail!">
+      <input nz-input formControlName="email" id="email" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="phoneNumber" nzRequired>Phone Number</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" [nzValidateStatus]="validateForm.controls['phoneNumber']"
+      nzErrorTip="Please input your phone number!">
+      <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
+        <ng-template #addOnBeforeTemplate>
+          <nz-select formControlName="phoneNumberPrefix" class="phone-select">
+            <nz-option nzLabel="+971" nzValue="+971"></nz-option>
+            <nz-option nzLabel="+61" nzValue="+61"></nz-option>
+            <nz-option nzLabel="+91" nzValue="+91"></nz-option>
+            <nz-option nzLabel="+65" nzValue="+65"></nz-option>
+          </nz-select>
+        </ng-template>
+        <input formControlName="phoneNumber" id="'phoneNumber'" nz-input />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>DOB</nz-form-label>
+    <nz-form-control [nzSm]="16" [nzXs]="24">
+      <nz-date-picker formControlName="dateOfBirth"></nz-date-picker>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="placeOfBirth">Birth Place</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Place of Birth is required!">
+      <input nz-input formControlName="placeOfBirth" id="placeOfBirth" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" [nzSpan]="5" nzFor="nationality" nzRequired>Nationality</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" [nzSpan]="12" nzErrorTip="Please select your Nationality">
+      <nz-select id="nationality" formControlName="nationality" nzPlaceHolder="Select Your Nationality"
+        (ngModelChange)="nationalityChange($event)">
+        <nz-option nzValue="uae" nzLabel="UAE"></nz-option>
+        <nz-option nzValue="india" nzLabel="India"></nz-option>
+        <nz-option nzValue="australia" nzLabel="Australia"></nz-option>
+        <nz-option nzValue="singapore" nzLabel="Singapore"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <ng-container *ngFor="let document of documents">
+    <nz-form-label [nzSm]="6" [nzXs]="24" [nzSpan]="5" nzRequired>{{document}}</nz-form-label>
+    <nz-form-control [nzSpan]="14" [nzOffset]="6">
+      <input type="file" (change)="assignName(document); handleChange($event.target.files)" />
+      <img [src]="uploadedImages[document]" style="max-height: 200px; max-width: 200px;" (click)="showPreviewImage(uploadedImages[document])"/>
+    </nz-form-control>
+  </ng-container>
+  </nz-form-item>
+
+
+
+  <nz-form-item nz-row class="register-area">
+    <nz-form-control [nzSpan]="14" [nzOffset]="6">
+      <label nz-checkbox formControlName="agree">
+        <span>I have read the <a>agreement</a></span>
+      </label>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item nz-row class="register-area">
+    <nz-form-control [nzSpan]="14" [nzOffset]="6">
+      <button nz-button nzType="primary">Register</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<nz-modal [(nzVisible)]="isVisible" [nzStyle]="{ top: '20px', width: '70vw' }" nzTitle="File Preview"
+  (nzOnCancel)="handleCancel()">
+  <div>
+    <img src="" style="height: 100%; width: 100%;" #previewImage />
+  </div>
+
+  <div *nzModalFooter>
+    <span>Modal Footer: </span>
+    <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+    <button nz-button nzType="primary">Submit</button>
+  </div>
+</nz-modal>
