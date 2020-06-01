@@ -48,7 +48,9 @@ export class CobrowsingformComponent implements OnInit {
   static mysequenceNumber: number;
   static prevSequenceNumberReceived: number;
   username: string;
+  userType: string;
   ngOnInit(): void {
+    this.userType = "";
     CobrowsingformComponent.uniqueId = this.cobrowsingService.getUniqueId();
     CobrowsingformComponent.mysequenceNumber = parseInt(this.cobrowsingService.getSequenceNumber());
 
@@ -231,13 +233,14 @@ export class CobrowsingformComponent implements OnInit {
     });
   }
 
-
   submitLoginForm() {
     for (const i in this.loginForm.controls) {
       this.loginForm.controls[i].markAsDirty();
       this.loginForm.controls[i].updateValueAndValidity();
     }
 
+
+    this.userType = this.loginForm.get('role').value;
     if(this.loginForm.get('otp').value === "1234") {
       this.username = this.loginForm.get("username").value;
       this.subscribeToSocket();
