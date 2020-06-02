@@ -6,7 +6,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { UploadFile, UploadChangeParam } from 'ng-zorro-antd/upload';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ActivatedRoute } from '@angular/router';
-import {AwsHelper} from './uploader';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-cobrowsingform',
@@ -70,7 +70,7 @@ export class CobrowsingformComponent implements OnInit {
 
   socket: SocketIOClient.Socket;
   subscribeToSocket() {
-    this.socket = io("http://13.232.53.10:3000", {
+    this.socket = io(environment.socketUrl, {
       "transports": ["polling", "websocket"]
     });
 
