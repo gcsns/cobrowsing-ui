@@ -7,18 +7,8 @@
     </nz-form-control>
   </nz-form-item>
 
-
   <nz-form-item>
-    <nz-form-label [nzSpan]="5" nzFor="role" nzRequired>Role</nz-form-label>
-    <nz-form-control [nzSpan]="12" nzErrorTip="Please select your role!">
-      <nz-select id="role" name="role" formControlName="role" nzPlaceHolder="Select your role">
-        <nz-option nzValue="agent" nzLabel="Agent"></nz-option>
-        <nz-option nzValue="customer" nzLabel="Customer"></nz-option>
-      </nz-select>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-label [nzSpan]="5" nzRequired nzFor="note">Enter otp</nz-form-label>
+    <nz-form-label [nzSpan]="5" nzRequired nzFor="note">Enter OTP</nz-form-label>
     <nz-form-control [nzSpan]="12" nzErrorTip="Please input otp!">
       <input id="otp" type="password" name="role" nz-input formControlName="otp" />
     </nz-form-control>
@@ -34,21 +24,21 @@
 <!-- after login -->
 
 <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()" *ngIf="!showLoginForm">
-  <nz-form-item *ngIf="userType === 'customer'">
+  <nz-form-item >
     <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="accountNumber">Account Number</nz-form-label>
     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="This field is required!">
       <input nz-input formControlName="accountNumber" id="accountNumber" />
     </nz-form-control>
   </nz-form-item>
 
-  <nz-form-item *ngIf="userType === 'customer'">
+  <nz-form-item >
     <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="firstName">First Name</nz-form-label>
     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="First name is required!">
       <input nz-input formControlName="firstName" id="firstName" />
     </nz-form-control>
   </nz-form-item>
 
-  <nz-form-item *ngIf="userType === 'customer'">
+  <nz-form-item >
     <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="middleName">Middle Name</nz-form-label>
     <nz-form-control [nzSm]="14" [nzXs]="24">
       <input nz-input formControlName="middleName" id="middleName" />
@@ -119,7 +109,9 @@
     <nz-form-label [nzSm]="6" [nzXs]="24" [nzSpan]="5" nzRequired>{{document}}</nz-form-label>
     <nz-form-control [nzSpan]="14" [nzOffset]="6">
       <input type="file" (change)="assignName(document); handleChange($event.target.files)" />
-      <img [src]="uploadedImages[document]" style="max-height: 200px; max-width: 200px;" (click)="showPreviewImage(uploadedImages[document])"/>
+      <img [src]="uploadedImages[document]" style="max-height: 200px; max-width: 200px;"
+        (click)="showPreviewImage(uploadedImages[document])"
+      />
     </nz-form-control>
   </ng-container>
   </nz-form-item>

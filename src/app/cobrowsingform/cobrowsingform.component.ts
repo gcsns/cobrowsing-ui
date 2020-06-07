@@ -28,6 +28,18 @@ export class CobrowsingformComponent implements OnInit {
       this.validateForm.controls[i].markAsDirty();
       this.validateForm.controls[i].updateValueAndValidity();
     }
+
+    if(!this.validateForm.errors) {
+      this.cobrowsingService.submitForm({
+        code: this.formCode,
+        formType: "llc",
+        uploadStatus : this.uploadedFilesTracker
+      }).subscribe(response=>{
+        console.log(response)
+      }, error=>{
+        console.log(error);
+      });
+    }
   }
 
 
@@ -42,13 +54,14 @@ export class CobrowsingformComponent implements OnInit {
     private msg: NzMessageService,
     private modalService: NzModalService,
     private activatedRoute: ActivatedRoute
-    ) {}
+  ) {}
 
   static uniqueId: string;
   static mysequenceNumber: number;
   static prevSequenceNumberReceived: number;
   username: string;
   userType: string;
+  formCode: string;
   ngOnInit(): void {
     this.userType = "";
     CobrowsingformComponent.uniqueId = this.cobrowsingService.getUniqueId();
@@ -57,6 +70,7 @@ export class CobrowsingformComponent implements OnInit {
     this.initLoginForm();
     this.initializeForm();
     this.watchForChange();
+    this.formCode = this.activatedRoute.snapshot.queryParams.formCode;
   }
 
   handleCancel(): void {
@@ -194,24 +208,33 @@ export class CobrowsingformComponent implements OnInit {
 
   counter = 0;
   imageName;
+
+  uploadedFilesTracker: any[] = [];
   handleChange(files: FileList) {
     console.log(this.imageName)
     if(this.counter === 0) {
       this.counter++;
-      this.socket.emit("info", `file upload has been started by ${this.username}`);
+      this.socket.emit("info", `file upload has been started `);
     }
     const fileToUpload = files.item(0);
     const reader = new FileReader();
     reader.onload = (evt) => {
-      // const file2Upload = evt.target.result;
-      // const uploadHelper = new AwsHelper("1597");
-      // uploadHelper.uploadPhoto(0, file2Upload, false, fileToUpload.name);
       this.socket.emit('fileUpload', {name: this.imageName, image:evt.target.result});
     };
 
     reader.onloadend = (data) => {
       this.counter = 0;
-      this.msg.success(`file successfully uploaded by ${this.username}`);
+      this.cobrowsingService.addPhoto(this.formCode || "default_album", files).subscribe(data=>{
+        this.msg.success(`file successfully uploaded`);
+        console.log(data);
+        this.uploadedFilesTracker.push({
+          name: data.key.split("/")[1],
+          documentLink: data.Location,
+          status: "pending"
+        });
+      }, error=>{
+        console.log("Something went wrong");
+      })
     }
     reader.readAsDataURL(fileToUpload);
   }
@@ -226,10 +249,18 @@ export class CobrowsingformComponent implements OnInit {
   loginForm!: FormGroup;
   showLoginForm = true;
   initLoginForm() {
+    const userType = this.activatedRoute.snapshot.queryParams?.userType?.toLocaleLowerCase();
+    console.log(userType)
+    if(userType === 'agent') {
+      this.userType = userType;
+      this.showLoginForm = false;
+      this.subscribeToSocket();
+    }
+
+
     this.loginForm = this.fb.group({
       username: [null, [Validators.required]],
       otp: [null, [Validators.required]],
-      role: [null, [Validators.required]]
     });
   }
 
@@ -239,18 +270,10 @@ export class CobrowsingformComponent implements OnInit {
       this.loginForm.controls[i].updateValueAndValidity();
     }
 
-
-    this.userType = this.loginForm.get('role').value;
     if(this.loginForm.get('otp').value === "1234") {
       this.username = this.loginForm.get("username").value;
       this.subscribeToSocket();
       this.showLoginForm = false;
     }
-  }
-
-
-  formCode: string;
-  uploadFile() {
-    // this.formCode = this.activatedRoute.snapshot.queryParams;
   }
 }
