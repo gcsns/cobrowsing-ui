@@ -108,7 +108,7 @@
     <ng-container *ngFor="let document of documents">
     <nz-form-label [nzSm]="6" [nzXs]="24" [nzSpan]="5" nzRequired>{{document.name}}</nz-form-label>
     <nz-form-control >
-      <input type="file" (change)="assignName(document.name); handleChange($event.target.files)" />
+      <input type="file" (change)="handleChange($event.target.files, document)" />
       <img [src]="document.documentLink" style="max-height: 200px; max-width: 200px;"
         (click)="showPreviewImage(document.documentLink)"
       />

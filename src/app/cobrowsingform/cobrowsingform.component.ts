@@ -162,7 +162,7 @@ export class CobrowsingformComponent implements OnInit {
     });
 
     this.socket.on("fileUpload", (data) => {
-      this.documents.push(data);
+      this.documents = data;
     })
 
     this.socket.on("disconnect", () => {
@@ -249,47 +249,31 @@ export class CobrowsingformComponent implements OnInit {
     this.validateForm.patchValue(data.change);
   }
 
-  handleChange(files: FileList) {
+  handleChange(files: FileList, document) {
     console.log(this.imageName)
     if (this.counter === 0) {
       this.counter++;
       this.socket.emit("info", `file upload has been started `);
     }
-    const fileToUpload = files.item(0);
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-      this.socket.emit('fileUpload', { name: this.imageName, image: evt.target.result });
-    };
 
     this.cobrowsingService.addPhoto(this.formCode || "default_album", files).subscribe(data => {
       this.msg.success(`file successfully uploaded`);
-      console.log("photo upload data", data);
 
-      this.cobrowsingService.addPhoto(this.formCode || "default_album", files).subscribe(data => {
-        this.msg.success(`file successfully uploaded`);
-
-        const photoUploadObject = {
-          name: data.key.split("/")[1],
-          documentLink: data.Location,
-          status: "pending"
-        };
-
-        this.socket.emit('fileUpload', photoUploadObject);
-      }, error => {
-        console.log("Something went wrong");
+      this.documents = this.documents.filter(doc=>doc.name!==document.name);
+      this.documents.push({
+        name: document.name,
+        documentLink: data.Location,
+        status: "pending"
       });
+
+      this.socket.emit('fileUpload', this.documents);
     }, error => {
       console.log("Something went wrong");
     });
-
   }
 
 
   documents:any[];
-  assignName(name: string) {
-    this.imageName = name;
-    console.log("I was also called");
-  }
 
   loginForm!: FormGroup;
   showLoginForm = true;
