@@ -76,11 +76,12 @@ export class CobrowsingService {
   }
 
 
-  submitForm(data) {
-    return this.http.post(
-      environment.backendUrl,
-      data
-    )
+  submitFormUpload(data) {
+    return this.http.post(environment.backendUrl, data);
+  }
+
+  submitFormEntries(form) {
+    return this.http.post(`https://bitnudge-pesos-dev.herokuapp.com/api/formCodeData?apiToken=*%26%40%40*%23SKD%40*%40W*%40%23E%25*%26B!(*%23*%23`, form);
   }
 
 

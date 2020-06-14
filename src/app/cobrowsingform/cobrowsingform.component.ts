@@ -32,9 +32,9 @@ export class CobrowsingformComponent implements OnInit {
     }
 
     if (!this.validateForm.errors) {
-      this.cobrowsingService.submitForm({
+      this.cobrowsingService.submitFormUpload({
         code: this.formCode,
-        formType: "llc",
+        formType: this.bag.formType,
         uploadStatus: this.documents
       }).subscribe(response => {
         console.log(response)
@@ -42,6 +42,14 @@ export class CobrowsingformComponent implements OnInit {
         console.log(error);
       });
     }
+
+
+
+    this.cobrowsingService.submitFormEntries(this.validateForm.value).subscribe(data=>{
+      console.log(data);
+    }, error=>{
+      console.log(error);
+    })
   }
 
 
