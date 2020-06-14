@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { from, Subscribable } from 'rxjs';
 
 declare let AWS: any;
+declare let _: any;
 
 @Injectable({
   providedIn: 'root'
@@ -81,4 +82,78 @@ export class CobrowsingService {
       data
     )
   }
+
+
+  updateCodeDataRecord(formCodeId: string, formCode: string, formType: string, customerId: string, customerName: string, docFields: any) {
+    var body = {
+      _id: formCodeId,
+      code: formCode,
+      formType: formType,
+      customerName: customerName,
+      customerId: customerId,
+      docFields: docFields,
+      isSubmitted: true
+    };
+
+    var url = environment.apiUrl + '/api/formCodeData';
+    url = url + '?apiToken=' + encodeURIComponent('*&@@*#SKD@*@W*@#E%*&B!(*#*#');
+    return this.http.post(url, body, {});
+
+
+    /**
+     * .subscribe((response: any) => {
+      console.log("Successfully update");
+    }, error => {
+      console.log(error);
+    });
+     */
+  }
+
+
+
+
+
+  getCodeData(bag, next) {
+    if (bag.skip) { return; }
+    let url = environment.apiUrl + '/api/formCodeData/code/' + bag.code;
+    if (bag.isMisc) {
+      url = url + '?misc=true&apiToken='
+    }
+    else if (bag.isPending) {
+      url = url + '?pending=true&apiToken='
+    }
+    url += encodeURIComponent('*&@@*#SKD@*@W*@#E%*&B!(*#*#');
+
+    return this.http.get(url);
+
+
+    /**
+     * .subscribe((response: any) => {
+      bag.formType = response.data.data.formType;
+      bag.customerName = response.data.data.customerName;
+      bag.customerId = response.data.data.customerId;
+      bag.docFields = response.data.data.docFields;
+      bag.formCodeId = response.data.data._id;
+      bag.formId = response.data.data.formId;
+      if (!_.isEmpty(response.data.data.analytics)) {
+        bag.isReopened = true;
+      }
+      if (!_.isEmpty(bag.docFields) && !bag.isMisc) {
+        this.formSubmitted = true;
+        bag.skip = true;
+        return next();
+      }
+      if (!_.isEmpty(bag.docFields)) {
+        this.formFields = bag.docFields;
+        this.formFields.push({ name: 'Finish' });
+        bag.skip = true;
+        return next();
+      }
+    }, error => {
+      console.log("An error occured");
+    })
+     */
+
+  }
+
 }
