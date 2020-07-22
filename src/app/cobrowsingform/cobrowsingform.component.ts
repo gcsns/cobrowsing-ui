@@ -45,9 +45,9 @@ export class CobrowsingformComponent implements OnInit {
 
 
 
-    this.cobrowsingService.submitFormEntries(this.validateForm.value).subscribe(data=>{
+    this.cobrowsingService.submitFormEntries(this.validateForm.value).subscribe(data => {
       console.log(data);
-    }, error=>{
+    }, error => {
       console.log(error);
     })
   }
@@ -259,7 +259,7 @@ export class CobrowsingformComponent implements OnInit {
     this.cobrowsingService.addPhoto(this.formCode || "default_album", files).subscribe(data => {
       this.msg.success(`file successfully uploaded`);
 
-      this.documents = this.documents.filter(doc=>doc.name!==document.name);
+      this.documents = this.documents.filter(doc => doc.name !== document.name);
       this.documents.push({
         name: document.name,
         documentLink: data.Location,
@@ -273,7 +273,7 @@ export class CobrowsingformComponent implements OnInit {
   }
 
 
-  documents:any[];
+  documents: any[];
 
   loginForm!: FormGroup;
   showLoginForm = true;
@@ -306,7 +306,7 @@ export class CobrowsingformComponent implements OnInit {
   bag = {} as any
   getCodeData() {
     this.bag.formId = "5c2db6e621ab263cc903921e";
-    if(this.bag.skip) {
+    if (this.bag.skip) {
       return;
     }
     this.cobrowsingService.getCodeData(this.bag).subscribe((response: any) => {
@@ -353,7 +353,7 @@ export class CobrowsingformComponent implements OnInit {
       console.log("previously updated data: ", response.uploadData);
 
       this.documents = response.uploadData.uploadStatus;
-    }, error=>{
+    }, error => {
       console.log(error);
     });
   }
