@@ -1,3 +1,9 @@
+export const EVENTS = {
+  SYNC_PREVIOUS_SESSIONS : 'SYNC_PREVIOUS_SESSIONS'
+};
+
+
+
 export const formJSON = {
   name: 'KYC Application Form',
   description: 'KYC application form',

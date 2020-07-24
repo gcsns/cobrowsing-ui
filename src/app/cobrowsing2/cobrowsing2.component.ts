@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 import { CobrowsingformComponent } from '../cobrowsingform/cobrowsingform.component';
 import { IAddPhotoReturn } from '../types/aws.interface';
 
-import { formJSON } from './options';
+import { formJSON, EVENTS } from './options';
 import { NzUploadListComponent } from 'ng-zorro-antd';
 
 @Component({
@@ -138,6 +138,12 @@ export class Cobrowsing2Component implements OnInit, OnDestroy {
       console.log('socket disconnected');
     });
 
+    if (this.userType === 'agent') {
+      this.socket.on(EVENTS.SYNC_PREVIOUS_SESSIONS, ({ documents, form }) => {
+        this.validateForm.patchValue(form);
+        this.documents = documents;
+      });
+    }
   }
 
 
@@ -175,7 +181,6 @@ export class Cobrowsing2Component implements OnInit, OnDestroy {
     });
 
     this.validateForm = this.fb.group(formObj);
-    this.populateHistory();
   }
 
   nationalityChange(event) {
@@ -260,7 +265,10 @@ export class Cobrowsing2Component implements OnInit, OnDestroy {
     if (this.loginForm.get('otp').value === '1234') {
       this.username = this.loginForm.get('username').value;
       this.subscribeToSocket();
+
+
       this.showLoginForm = false;
+      this.populateHistory();
     }
   }
 
@@ -309,20 +317,17 @@ export class Cobrowsing2Component implements OnInit, OnDestroy {
 
 
   populateHistory() {
-    const { documents, form } = this.cobrowsingService.getForm2Details();
-    console.log('Retrieved histor', documents, form);
 
-    this.validateForm.patchValue(form);
-    this.documents = documents;
-    // for (let past of documents) {
-    //   for (let doc of documents) {
-    //     if (doc.name === past.name) {
-    //       doc = past;
-    //     }
-    //   }
-    // }
+    if (this.userType !== 'agent') {
+      const { documents, form } = this.cobrowsingService.getForm2Details();
+      console.log('Retrieved histor', documents, form);
 
-    // this.documents = this.documents.filter(() => true);
+      this.validateForm.patchValue(form);
+      this.documents = documents;
+
+      // send this value to the other side
+      this.socket.emit(EVENTS.SYNC_PREVIOUS_SESSIONS, { documents, form });
+    }
   }
 
   @HostListener('window:beforeunload', ['$event'])
