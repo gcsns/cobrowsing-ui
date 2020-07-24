@@ -10,12 +10,14 @@ import { CobrowsingformComponent } from './cobrowsingform/cobrowsingform.compone
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { en_US, NzI18nService } from 'ng-zorro-antd';
 import { NZ_I18N } from 'ng-zorro-antd/i18n';
+import { Cobrowsing2Component } from './cobrowsing2/cobrowsing2.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    CobrowsingformComponent
+    CobrowsingformComponent,
+    Cobrowsing2Component
   ],
   imports: [
     BrowserModule,

@@ -18,7 +18,7 @@ export class CobrowsingformComponent implements OnInit {
   validateForm!: FormGroup;
   fileList: UploadFile[] = []
   previewMode = false;
-  uploadedImages:string[] = [];
+  uploadedImages: string[] = [];
   isVisible = false;
   isConfirmLoading = false;
 
@@ -29,14 +29,14 @@ export class CobrowsingformComponent implements OnInit {
       this.validateForm.controls[i].updateValueAndValidity();
     }
 
-    if(!this.validateForm.errors) {
+    if (!this.validateForm.errors) {
       this.cobrowsingService.submitForm({
         code: this.formCode,
         formType: "llc",
-        uploadStatus : this.uploadedFilesTracker
-      }).subscribe(response=>{
+        uploadStatus: this.uploadedFilesTracker
+      }).subscribe(response => {
         console.log(response)
-      }, error=>{
+      }, error => {
         console.log(error);
       });
     }
@@ -54,7 +54,7 @@ export class CobrowsingformComponent implements OnInit {
     private msg: NzMessageService,
     private modalService: NzModalService,
     private activatedRoute: ActivatedRoute
-  ) {}
+  ) { }
 
   static uniqueId: string;
   static mysequenceNumber: number;
@@ -89,18 +89,18 @@ export class CobrowsingformComponent implements OnInit {
     });
 
 
-    this.socket.on("sync", (data)=>{
+    this.socket.on("sync", (data) => {
       console.log("sync event fired, syncing numbers")
-      if(data.uniqueId!=CobrowsingformComponent.uniqueId) {
-        CobrowsingformComponent.prevSequenceNumberReceived = data.nextSequenceNumber-10;
+      if (data.uniqueId != CobrowsingformComponent.uniqueId) {
+        CobrowsingformComponent.prevSequenceNumberReceived = data.nextSequenceNumber - 10;
       }
     });
 
-    this.socket.on("sync", (data)=>{
+    this.socket.on("sync", (data) => {
       CobrowsingformComponent.prevSequenceNumberReceived = data.nextSequenceNumber;
     })
 
-    this.socket.emit("sync", {nextSequenceNumber: CobrowsingformComponent.mysequenceNumber, uniqueId: CobrowsingformComponent.uniqueId})
+    this.socket.emit("sync", { nextSequenceNumber: CobrowsingformComponent.mysequenceNumber, uniqueId: CobrowsingformComponent.uniqueId })
 
     this.socket.on("connect", (data) => {
       console.log("socket connected");
@@ -110,12 +110,12 @@ export class CobrowsingformComponent implements OnInit {
       this.handleData(data);
     });
 
-    this.socket.on("info", (message)=> {
+    this.socket.on("info", (message) => {
       console.log("some info received");
       this.msg.info(message)
     });
 
-    this.socket.on("fileUpload", (data)=>{
+    this.socket.on("fileUpload", (data) => {
       const { image, name } = data;
       console.log("some file was uploaded by the client");
       this.uploadedImages[name] = image;
@@ -131,14 +131,14 @@ export class CobrowsingformComponent implements OnInit {
   isUnchanged(changedValues) {
     console.log(this.validateForm.value, changedValues);
     let counter = 0;
-    Object.keys(this.validateForm.value).forEach(key=>{
-      if(this.validateForm.value[key]!==changedValues[key]) {
+    Object.keys(this.validateForm.value).forEach(key => {
+      if (this.validateForm.value[key] !== changedValues[key]) {
         console.log(this.validateForm.value[key], changedValues[key])
         counter++;
       }
     })
 
-    if(counter > 0) {
+    if (counter > 0) {
       return false;
     }
 
@@ -148,7 +148,7 @@ export class CobrowsingformComponent implements OnInit {
 
   initializeForm() {
     this.validateForm = this.fb.group({
-      accountNumber: [null, [ Validators.required]],
+      accountNumber: [null, [Validators.required]],
       firstName: [null, [Validators.required]],
       middleName: [null],
       lastName: [null, [Validators.required]],
@@ -157,7 +157,7 @@ export class CobrowsingformComponent implements OnInit {
       phoneNumber: [null, [Validators.required]],
 
       dateOfBirth: [],
-      placeOfBirth:[null],
+      placeOfBirth: [null],
       nationality: [null, [Validators.required]],
       countryOfBirth: [null],
       address: [null, Validators.required],
@@ -177,8 +177,8 @@ export class CobrowsingformComponent implements OnInit {
 
 
   watchForChange() {
-    this.validateForm.valueChanges.subscribe(change=>{
-      CobrowsingformComponent.mysequenceNumber = CobrowsingformComponent.mysequenceNumber+10;
+    this.validateForm.valueChanges.subscribe(change => {
+      CobrowsingformComponent.mysequenceNumber = CobrowsingformComponent.mysequenceNumber + 10;
       const msg = {
         nextsequenceNumber: CobrowsingformComponent.mysequenceNumber,
         uniqueId: CobrowsingformComponent.uniqueId,
@@ -191,12 +191,12 @@ export class CobrowsingformComponent implements OnInit {
 
 
   handleData(data: any) {
-    if(data.uniqueId === CobrowsingformComponent.uniqueId) {
+    if (data.uniqueId === CobrowsingformComponent.uniqueId) {
       console.log("same id returning", CobrowsingformComponent.uniqueId, data.uniqueId)
       return;
     }
 
-    if(CobrowsingformComponent.prevSequenceNumberReceived >= data.nextsequenceNumber) {
+    if (CobrowsingformComponent.prevSequenceNumberReceived >= data.nextsequenceNumber) {
       return;
     }
 
@@ -211,37 +211,41 @@ export class CobrowsingformComponent implements OnInit {
 
   uploadedFilesTracker: any[] = [];
   handleChange(files: FileList) {
-    console.log(this.imageName)
-    if(this.counter === 0) {
-      this.counter++;
-      this.socket.emit("info", `file upload has been started `);
-    }
-    const fileToUpload = files.item(0);
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-      this.socket.emit('fileUpload', {name: this.imageName, image:evt.target.result});
-    };
+    // console.log(this.imageName)
+    // if (this.counter === 0) {
+    //   this.counter++;
+    //   this.socket.emit("info", `file upload has been started `);
+    // }
+    // const fileToUpload = files.item(0);
+    // const reader = new FileReader();
+    // reader.onload = (evt) => {
+    //   this.socket.emit('fileUpload', { name: this.imageName, image: evt.target.result });
+    // };
 
-    reader.onloadend = (data) => {
-      this.counter = 0;
-      this.cobrowsingService.addPhoto(this.formCode || "default_album", files).subscribe(data=>{
-        this.msg.success(`file successfully uploaded`);
-        console.log(data);
-        this.uploadedFilesTracker.push({
-          name: data.key.split("/")[1],
-          documentLink: data.Location,
-          status: "pending"
-        });
-      }, error=>{
-        console.log("Something went wrong");
-      })
-    }
-    reader.readAsDataURL(fileToUpload);
+    // reader.onloadend = (data) => {
+    //   this.counter = 0;
+
+    // }
+    // reader.readAsDataURL(fileToUpload);
+
+
+    this.cobrowsingService.addPhoto(this.formCode || "default_album", files).subscribe(data => {
+      this.socket.emit('fileUpload', { name: this.imageName, image: data.Location });
+      this.msg.success(`file successfully uploaded`);
+      console.log(data);
+      this.uploadedFilesTracker.push({
+        name: data.key.split("/")[1],
+        documentLink: data.Location,
+        status: "pending"
+      });
+    }, error => {
+      console.log("Something went wrong");
+    })
   }
 
 
   documents = ['Salary', 'National Id', 'Passport', 'Proof of Address']
-  assignName(name: string){
+  assignName(name: string) {
     this.imageName = name;
     console.log("I was also called");
   }
@@ -251,7 +255,7 @@ export class CobrowsingformComponent implements OnInit {
   initLoginForm() {
     const userType = this.activatedRoute.snapshot.queryParams?.userType?.toLocaleLowerCase();
     console.log(userType)
-    if(userType === 'agent') {
+    if (userType === 'agent') {
       this.userType = userType;
       this.showLoginForm = false;
       this.subscribeToSocket();
@@ -270,7 +274,7 @@ export class CobrowsingformComponent implements OnInit {
       this.loginForm.controls[i].updateValueAndValidity();
     }
 
-    if(this.loginForm.get('otp').value === "1234") {
+    if (this.loginForm.get('otp').value === "1234") {
       this.username = this.loginForm.get("username").value;
       this.subscribeToSocket();
       this.showLoginForm = false;

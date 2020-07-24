@@ -1,0 +1,72 @@
+<!-- after login -->
+<form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()" *ngIf="!showLoginForm">
+
+  <nz-page-header-title>{{cbFormJSON.name}}</nz-page-header-title>
+  <nz-page-header-subtitle>{{cbFormJSON.description}}</nz-page-header-subtitle>
+  <nz-page-header-tags>
+    <nz-tag nzColor="blue" *ngFor="let tag of cbFormJSON.tags">{{tag}}</nz-tag>
+  </nz-page-header-tags>
+
+
+  <ng-container *ngFor="let key of objectkeys(cbFormJSON.metadata)">
+    <nz-divider [nzText]="cbFormJSON.metadata[key]['label']" nzOrientation="left"
+      *ngIf="cbFormJSON.metadata[key].type === 'radiogroup' || cbFormJSON.metadata[key].type === 'input' || cbFormJSON.metadata[key].type === 'textarea'">
+    </nz-divider>
+    <nz-radio-group [formControlName]="key" [nzName]="cbFormJSON.metadata[key].name"
+      *ngIf="cbFormJSON.metadata[key].type==='radiogroup'">
+      <label nz-radio *ngFor="let option of cbFormJSON.metadata[key].options"
+        [nzValue]="option.value">{{option.text}}</label>
+    </nz-radio-group>
+
+    <input nz-input [placeholder]="cbFormJSON.metadata[key].label" [formControlName]="key"
+      *ngIf="cbFormJSON.metadata[key].type==='input'" />
+    <textarea rows="4" nz-input [formControlName]="key" *ngIf="cbFormJSON.metadata[key].type==='textarea'"></textarea>
+  </ng-container>
+
+
+  <ng-container *ngFor="let doc of documents">
+    <nz-divider [nzText]="doc.label" nzOrientation="left"></nz-divider>
+    <img *ngIf="doc?.url" [src]="doc.url" [alt]="doc.label" width="200" height="200" (click)="showPreviewImage(doc)">
+    <br />
+    <nz-upload [(nzFileList)]="fileList" [nzBeforeUpload]="beforeUpload" [nzMultiple]=true nzName="files"
+      (click)="markActiveDocument(doc)">
+      <button nz-button><i nz-icon nzType="upload"></i>{{doc.label}}</button>
+    </nz-upload>
+  </ng-container>
+</form>
+
+<!-- before login -->
+<form nz-form [formGroup]="loginForm" (ngSubmit)="submitLoginForm()" *ngIf="showLoginForm">
+  <nz-form-item>
+    <nz-form-label [nzSpan]="5" nzRequired nzFor="username">Username</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzErrorTip="Username is required!">
+      <input nz-input formControlName="username" id="username" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="5" nzRequired nzFor="note">Enter OTP</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzErrorTip="Please input otp!">
+      <input id="otp" type="password" name="role" nz-input formControlName="otp" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control [nzSpan]="12" [nzOffset]="5">
+      <button nz-button nzType="primary">Submit</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+
+
+<nz-modal [(nzVisible)]="isVisible" [nzStyle]="{ top: '20px', width: '70vw' }" nzTitle="File Preview"
+  (nzOnCancel)="handleCancel()">
+  <div>
+    <img src="" style="height: 100%; width: 100%;" #previewImage />
+  </div>
+
+  <div *nzModalFooter>
+    <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+    <button nz-button nzType="primary">Submit</button>
+  </div>
+</nz-modal>
