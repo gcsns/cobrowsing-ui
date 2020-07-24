@@ -1,12 +1,12 @@
 export const EVENTS = {
-  SYNC_PREVIOUS_SESSIONS : 'SYNC_PREVIOUS_SESSIONS'
+  SYNC_PREVIOUS_SESSIONS: 'SYNC_PREVIOUS_SESSIONS',
 };
 
 
 
 export const formJSON = {
-  name: 'KYC Application Form',
-  description: 'KYC application form',
+  name: 'Application Form',
+  description: 'Financial professionals use only',
   header: 'KYC Application Form',
   isFormReviewable: true,
   eformType: 'docuSignPDF',
@@ -40,15 +40,21 @@ export const formJSON = {
       options: [
         {
           value: 'policyOwner1',
-          text: 'Policy Owner 1'
+          text: 'Policy Owner 1',
+          query: `Have you smoked or used any form of tobacco or
+          nicotine product within the last 12 months?`
         },
         {
           value: 'policyOwner2',
-          text: 'Policy Owner 2'
+          text: 'Policy Owner 2',
+          query: `Have you smoked or used any form of tobacco or
+          nicotine product within the last 12 months?`
         },
         {
           value: 'other',
-          text: 'Other'
+          text: 'Other',
+          query: `please complete the ‘Additional lives insured application
+          form`
         }
       ]
     },

@@ -2,20 +2,25 @@
 <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()" *ngIf="!showLoginForm">
 
   <nz-page-header-title>{{cbFormJSON.name}}</nz-page-header-title>
-  <nz-page-header-subtitle>{{cbFormJSON.description}}</nz-page-header-subtitle>
-  <nz-page-header-tags>
-    <nz-tag nzColor="blue" *ngFor="let tag of cbFormJSON.tags">{{tag}}</nz-tag>
-  </nz-page-header-tags>
+
+  <nz-descriptions nzBordered nzTitle="Financial professionals use only">
+    <nz-descriptions-item nzTitle="Introducer name">Standard Chartered Bank</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Introducer number">UAE 8910120</nz-descriptions-item>
+  </nz-descriptions>
 
 
   <ng-container *ngFor="let key of objectkeys(cbFormJSON.metadata)">
     <nz-divider [nzText]="cbFormJSON.metadata[key]['label']" nzOrientation="left"
       *ngIf="cbFormJSON.metadata[key].type === 'radiogroup' || cbFormJSON.metadata[key].type === 'input' || cbFormJSON.metadata[key].type === 'textarea'">
     </nz-divider>
+
     <nz-radio-group [formControlName]="key" [nzName]="cbFormJSON.metadata[key].name"
       *ngIf="cbFormJSON.metadata[key].type==='radiogroup'">
-      <label nz-radio *ngFor="let option of cbFormJSON.metadata[key].options"
-        [nzValue]="option.value">{{option.text}}</label>
+
+      <ng-container *ngFor="let option of cbFormJSON.metadata[key].options">
+        <label nz-radio [nzValue]="option.value">{{option.text}}</label><br>
+        <p>{{option.query}}</p>
+      </ng-container>
     </nz-radio-group>
 
     <input nz-input [placeholder]="cbFormJSON.metadata[key].label" [formControlName]="key"

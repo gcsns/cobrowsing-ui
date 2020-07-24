@@ -66,6 +66,8 @@ export class Cobrowsing2Component implements OnInit, OnDestroy {
     this.watchForChange();
 
     this.formCode = this.activatedRoute.snapshot.queryParams.formCode;
+
+    this.startInterval();
   }
   submitForm(): void {
     // tslint:disable-next-line: forin
@@ -128,10 +130,9 @@ export class Cobrowsing2Component implements OnInit, OnDestroy {
       this.msg.info(message);
     });
 
-    this.socket.on('fileUpload', (data) => {
-      const { image, name } = data;
+    this.socket.on('fileUpload', ({ documents }) => {
       console.log('some file was uploaded by the client');
-      this.uploadedImages[name] = image;
+      this.documents = documents;
     });
 
     this.socket.on('disconnect', () => {
@@ -140,6 +141,7 @@ export class Cobrowsing2Component implements OnInit, OnDestroy {
 
     if (this.userType === 'agent') {
       this.socket.on(EVENTS.SYNC_PREVIOUS_SESSIONS, ({ documents, form }) => {
+        console.log('received a sync message', documents, form);
         this.validateForm.patchValue(form);
         this.documents = documents;
       });
@@ -221,20 +223,8 @@ export class Cobrowsing2Component implements OnInit, OnDestroy {
     CobrowsingformComponent.mysequenceNumber -= 10;
     this.validateForm.patchValue(data.change);
   }
-  handleChange(files: FileList) {
-    this.cobrowsingService.addPhoto(this.formCode || 'default_album', files).subscribe((data: IAddPhotoReturn) => {
-      this.socket.emit('fileUpload', { name: this.imageName, image: data.Location });
-      this.msg.success(`file successfully uploaded`);
-      console.log(data);
-      this.uploadedFilesTracker.push({
-        name: data.key.split('/')[1],
-        documentLink: data.Location,
-        status: 'pending'
-      });
-    }, error => {
-      console.log('Something went wrong');
-    });
-  }
+
+
   assignName(name: string) {
     this.imageName = name;
     console.log('I was also called');
@@ -293,10 +283,11 @@ export class Cobrowsing2Component implements OnInit, OnDestroy {
           return doc;
         });
 
+        this.socket.emit('fileUpload', { documents: this.documents });
         this.uploading = false;
         this.fileList = [];
         this.msg.success('Attachments uploaded successfully.');
-        },
+      },
         () => {
           this.uploading = false;
           this.msg.error('upload failed.');
@@ -328,14 +319,27 @@ export class Cobrowsing2Component implements OnInit, OnDestroy {
       // send this value to the other side
       this.socket.emit(EVENTS.SYNC_PREVIOUS_SESSIONS, { documents, form });
     }
+
   }
 
+
+  interval: any;
   @HostListener('window:beforeunload', ['$event'])
   beforeunloadHandler(event) {
-      this.cobrowsingService.saveForm2Details(this.validateForm.value, this.documents);
+    this.cobrowsingService.saveForm2Details(this.validateForm.value, this.documents);
+    clearInterval(this.interval)
   }
 
   ngOnDestroy() {
     this.cobrowsingService.saveForm2Details(this.validateForm.value, this.documents);
+    clearInterval(this.interval)
+  }
+
+
+  startInterval() {
+    console.log('not using interval')
+    // this.interval = setInterval(() => {
+    //   this.cobrowsingService.saveForm2Details(this.validateForm.value, this.documents);
+    // }, 5000);
   }
 }
